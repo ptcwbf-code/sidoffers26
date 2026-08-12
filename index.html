@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="auto">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SID · 世界大学排名汇总 2027</title>
+<style>
+/* ===== Design Tokens ===== */
+:root {
+  --bg: #f5f6f9;
+  --surface: #ffffff;
+  --surface-alt: #f8f9fc;
+  --text: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #94a3b8;
+  --primary: #1e3a8a;
+  --primary-hover: #1e40af;
+  --primary-light: #dbeafe;
+  --primary-subtle: #eff6ff;
+  --accent: #2563eb;
+  --accent-light: #e8f0fe;
+  --gold: #b45309;
+  --gold-light: #fffbeb;
+  --gold-border: #fcd34d;
+  --emerald: #0d9488;
+  --emerald-light: #f0fdfa;
+  --emerald-border: #5eead4;
+  --rule: #e2e8f0;
+  --rule-light: #f1f5f9;
+  --shadow-xs: 0 1px 2px rgba(0,0,0,.04);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.04);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,.08), 0 2px 6px rgba(0,0,0,.04);
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --font-mono: "SF Mono","Cascadia Code","Consolas","Liberation Mono","Menlo",monospace;
+  --font-serif: "Georgia","Times New Roman","Noto Serif SC","PingFang SC",serif;
+  --font-sans: "Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans SC","PingFang SC",sans-serif;
+  /* Rank tiers */
+  --tier1-bg: #fffbeb; --tier1-fg: #92400e; --tier1-bd: #fbbf24;
+  --tier2-bg: #f8fafc; --tier2-fg: #334155; --tier2-bd: #cbd5e1;
+  --tier3-bg: #fafbfc; --tier3-fg: #475569; --tier3-bd: #e2e8f0;
+  --tier4-bg: transparent; --tier4-fg: #1e3a8a; --tier4-bd: #bfdbfe;
+  --tier5-fg: #94a3b8;
+  --best-outline: #d97706;
+  /* Scale */
+  --page-scale: 0.75;
+}
+
+[data-theme="dark"] {
+  --bg: #0f1117;
+  --surface: #1a1d27;
+  --surface-alt: #1e2130;
+  --text: #e2e4ec;
+  --text-secondary: #a8acb8;
+  --text-tertiary: #6b6f7b;
+  --primary: #60a5fa;
+  --primary-hover: #93bbfd;
+  --primary-light: #1e293b;
+  --primary-subtle: #172033;
+  --accent: #3b82f6;
+  --accent-light: #1e293b;
+  --gold: #fbbf24;
+  --gold-light: #2d2400;
+  --gold-border: #92400e;
+  --emerald: #34d399;
+  --emerald-light: #022c22;
+  --emerald-border: #065f46;
+  --rule: #2a2d3a;
+  --rule-light: #222533;
+  --shadow-xs: 0 1px 2px rgba(0,0,0,.3);
+  --shadow-sm: 0 1px 4px rgba(0,0,0,.35);
+  --shadow-md: 0 4px 14px rgba(0,0,0,.4);
+  --shadow-lg: 0 8px 28px rgba(0,0,0,.45);
+  --tier1-bg: #3b2800; --tier1-fg: #fbbf24; --tier1-bd: #92400e;
+  --tier2-bg: #1e293b; --tier2-fg: #cbd5e1; --tier2-bd: #334155;
+  --tier3-bg: #19212b; --tier3-fg: #94a3b8; --tier3-bd: #2e3644;
+  --tier4-bg: transparent; --tier4-fg: #60a5fa; --tier4-bd: #1e3a5f;
+  --tier5-fg: #6b6f7b;
+  --best-outline: #fbbf24;
+}
+
+/* ===== Reset ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+html, body { height: 100%; overflow: hidden; }
+
+/* Desktop-only: 75% scale to see more rows */
+@media (min-width: 769px) {
+  body { font-size: calc(13.5px * var(--page-scale)); }
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  font-size: 13.5px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Scale all UI proportionally (desktop only) */
+@media (min-width: 769px) {
+  .toolbar { transform-origin: top left; zoom: var(--page-scale); }
+  .table-viewport { font-size: calc(0.83rem * var(--page-scale)); }
+}
+
+/* ===== Toolbar ===== */
+.toolbar {
+  flex-shrink: 0;
+  background: var(--surface);
+  border-bottom: 1px solid var(--rule);
+  box-shadow: var(--shadow-xs);
+  z-index: 200;
+  position: relative;
+}
+.toolbar::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 50%, #0d9488 100%);
+}
+[data-theme="dark"] .toolbar::before {
+  background: linear-gradient(90deg, #1e3a8a 0%, #60a5fa 50%, #34d399 100%);
+}
+
+.tb-section { padding: 10px 28px; }
+.tb-section + .tb-section { border-top: 1px solid var(--rule-light); }
+
+/* Title row */
+.tb-title-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap; padding-top: 14px; padding-bottom: 14px;
+}
+.tb-brand { display: flex; align-items: center; gap: 12px; }
+.tb-brand-icon {
+  width: 38px; height: 38px; border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+  color: #fff; font-size: 1rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  letter-spacing: -.03em; box-shadow: 0 2px 8px rgba(30,58,138,.25);
+}
+.tb-title {
+  font-family: var(--font-serif); font-size: 1.15rem; font-weight: 400;
+  color: var(--primary); letter-spacing: .01em; white-space: nowrap;
+}
+.tb-stats { font-size: .76rem; color: var(--text-tertiary); display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+.tb-stats .stat-item { display: flex; align-items: center; gap: 5px; }
+.tb-stats .stat-val { font-family: var(--font-mono); font-size: .95rem; font-weight: 700; color: var(--text); }
+.tb-stats .stat-unit { font-size: .7rem; color: var(--text-tertiary); }
+
+/* Controls row */
+.tb-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.tb-controls.compact { gap: 6px; }
+
+/* Search */
+.search-box { position: relative; flex: 1; min-width: 180px; max-width: 320px; }
+.search-box input {
+  width: 100%; height: 36px; padding: 0 14px 0 36px;
+  border: 1.5px solid var(--rule); border-radius: var(--radius-sm);
+  font-size: .83rem; font-family: inherit; background: var(--bg); color: var(--text);
+  transition: all var(--transition);
+}
+.search-box input:focus {
+  outline: none; border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37,99,235,.08); background: var(--surface);
+}
+.search-box .search-icon {
+  position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+  color: var(--text-tertiary); font-size: .85rem; pointer-events: none;
+}
+.search-box .clear-btn {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  background: #cbd5e1; border: none; border-radius: 50%; color: #475569;
+  cursor: pointer; font-size: .62rem; width: 18px; height: 18px;
+  display: flex; align-items: center; justify-content: center; padding: 0;
+  opacity: 0; pointer-events: none;
+  transition: opacity var(--transition), background var(--transition);
+}
+.search-box .clear-btn.visible { opacity: .7; pointer-events: auto; }
+.search-box .clear-btn:hover { opacity: 1; background: #94a3b8; color: #fff; }
+
+/* Selects */
+.sel {
+  height: 36px; padding: 0 28px 0 12px;
+  border: 1.5px solid var(--rule); border-radius: var(--radius-sm);
+  font-size: .82rem; font-family: inherit; color: var(--text);
+  background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2394a3b8'/%3E%3C/svg%3E") no-repeat right 10px center;
+  cursor: pointer; -webkit-appearance: none; appearance: none;
+  min-width: 90px; transition: all var(--transition);
+}
+.sel:hover { border-color: #cbd5e1; }
+.sel:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,.08); }
+
+/* Chips */
+.chips { display: flex; gap: 5px; flex-wrap: wrap; }
+.chip {
+  padding: 5px 15px; border-radius: 20px; font-size: .76rem;
+  cursor: pointer; border: 1.5px solid var(--rule); background: var(--surface);
+  color: var(--text-secondary); transition: all var(--transition);
+  white-space: nowrap; font-family: inherit; line-height: 1.4; font-weight: 500;
+}
+.chip:hover { border-color: #bfdbfe; background: var(--primary-subtle); color: var(--primary); }
+.chip.active {
+  background: var(--primary); color: #fff; border-color: var(--primary);
+  font-weight: 600; box-shadow: 0 2px 6px rgba(30,58,138,.2);
+}
+
+/* Theme toggle */
+.theme-toggle {
+  background: none; border: 1.5px solid var(--rule); border-radius: 20px;
+  cursor: pointer; font-size: .85rem; padding: 5px 10px;
+  transition: all var(--transition); display: inline-flex; align-items: center;
+  gap: 4px; color: var(--text-secondary); line-height: 1;
+}
+.theme-toggle:hover { border-color: #bfdbfe; background: var(--primary-subtle); }
+
+/* Tips dismiss button */
+.tips-dismiss:hover { background: var(--rule-light) !important; color: var(--text-secondary) !important; }
+
+/* Active filter indicator */
+.kb-hint {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: .7rem; padding: 4px 10px; border-radius: 14px;
+  color: var(--accent); background: var(--accent-light);
+  border: 1px solid rgba(37,99,235,.18); font-weight: 500;
+  white-space: nowrap; animation: hintIn .2s ease;
+}
+[data-theme="dark"] .kb-hint { background: #1a2740; border-color: #1e3a8a; }
+@keyframes hintIn { from{opacity:0;transform:scale(.94)} to{opacity:1;transform:scale(1)} }
+.kb-hint kbd { font-size: .6rem; margin-left: 1px; }
+
+/* Custom rank panel */
+.custom-rank-panel {
+  display: inline-flex; align-items: center; gap: 4px;
+  animation: hintIn .2s ease;
+}
+.custom-rank-row {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: var(--surface); border: 1.5px solid var(--accent);
+  border-radius: var(--radius-sm); padding: 4px 10px;
+}
+.custom-rank-label { font-size: .74rem; color: var(--text-secondary); white-space: nowrap; font-weight: 500; }
+.custom-rank-num {
+  width: 55px; height: 30px; border: 1.5px solid var(--rule);
+  border-radius: var(--radius-xs); font-size: .82rem; font-family: var(--font-mono);
+  text-align: center; background: var(--bg); color: var(--text);
+  transition: border-color var(--transition);
+}
+.custom-rank-num:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,.08); }
+.sel-sm { height: 30px; font-size: .74rem; min-width: 100px; padding: 0 24px 0 8px; }
+
+/* Tips bar */
+.tb-tips {
+  display: flex; align-items: center; gap: 8px;
+  font-size: .72rem; color: var(--text-secondary);
+  background: var(--primary-subtle);
+  border-top: 1px solid #bfdbfe; border-bottom: 1px solid #bfdbfe;
+  padding: 8px 28px;
+}
+[data-theme="dark"] .tb-tips { background: #1a2740; border-color: #1e3a5f; }
+.tb-tips .tips-icon { font-size: .9rem; flex-shrink: 0; }
+.tb-tips .tips-text { line-height: 1.6; }
+.tb-tips kbd { font-size: .65rem; }
+
+/* Stats bar */
+.stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+.stats-group {
+  background: var(--surface-alt); border: 1px solid var(--rule);
+  border-radius: var(--radius-md); padding: 12px 14px;
+  display: flex; flex-direction: column; gap: 8px;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.stats-group:hover { border-color: #cbd5e1; box-shadow: var(--shadow-sm); }
+.stats-group-label {
+  font-size: .67rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--text-tertiary);
+  display: flex; align-items: center; gap: 6px;
+}
+.stats-group-label .sg-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.stats-group-cards { display: flex; gap: 8px; }
+.stats-group-cards .sg-card {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  padding: 8px 6px; background: var(--surface); border-radius: var(--radius-sm);
+  border: 1px solid var(--rule-light); transition: all var(--transition);
+}
+.stats-group-cards .sg-card:hover { border-color: #cbd5e1; box-shadow: var(--shadow-xs); }
+.sg-card .sg-val { font-family: var(--font-mono); font-size: 1.2rem; font-weight: 700; color: var(--primary); line-height: 1.1; }
+.sg-card .sg-label { font-size: .64rem; color: var(--text-tertiary); margin-top: 2px; white-space: nowrap; text-align: center; }
+.sg-card .sg-label em { font-style: normal; color: var(--text-secondary); font-weight: 600; }
+
+/* Action bar */
+.tb-actions {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; font-size: .76rem;
+  color: var(--text-tertiary); padding-top: 10px; padding-bottom: 10px;
+}
+.tb-actions .left { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.tb-actions .right { display: flex; align-items: center; gap: 6px; }
+
+.action-btn {
+  background: none; border: 1px solid var(--rule); border-radius: var(--radius-sm);
+  color: var(--text-secondary); cursor: pointer; font-size: .74rem;
+  font-family: inherit; padding: 5px 13px; white-space: nowrap;
+  transition: all var(--transition); display: inline-flex; align-items: center;
+  gap: 5px; line-height: 1.3; font-weight: 500;
+}
+.action-btn:hover { color: var(--primary); border-color: #bfdbfe; background: var(--primary-subtle); }
+.action-btn.primary { background: var(--primary); color: #fff; border-color: var(--primary); font-weight: 600; }
+.action-btn.primary:hover { background: var(--primary-hover); }
+
+/* Column toggle */
+.col-toggle-wrap { position: relative; display: inline-block; }
+.col-toggle-menu {
+  display: none; position: absolute; top: 100%; right: 0; margin-top: 6px;
+  background: var(--surface); border: 1px solid var(--rule);
+  border-radius: var(--radius-md); box-shadow: var(--shadow-lg);
+  padding: 6px 0; z-index: 300; min-width: 200px; font-size: .76rem;
+}
+.col-toggle-menu.open { display: block; }
+.col-toggle-menu label {
+  display: flex; align-items: center; gap: 8px; padding: 6px 16px;
+  cursor: pointer; color: var(--text); white-space: nowrap;
+  transition: background var(--transition);
+}
+.col-toggle-menu label:hover { background: var(--primary-subtle); }
+.col-toggle-menu label input { accent-color: var(--accent); }
+
+/* Legend */
+.legend { display: flex; flex-wrap: wrap; gap: 4px 16px; align-items: center; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: .68rem; color: var(--text-tertiary); }
+.legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+kbd {
+  display: inline-block; padding: 1px 6px; border-radius: 3px;
+  border: 1px solid #d1d5db; background: #f3f4f6;
+  font-family: var(--font-mono); font-size: .67rem; color: var(--text-secondary);
+}
+[data-theme="dark"] kbd { border-color: #4b4b55; background: #35353d; color: #d1d1d8; }
+
+/* ===== Table viewport ===== */
+.table-viewport { flex: 1; min-height: 200px; overflow: auto; scroll-behavior: smooth; position: relative; }
+
+.sticky-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: .83rem; table-layout: auto; }
+
+thead { position: sticky; top: 0; z-index: 50; }
+th {
+  background: #f1f5f9; color: var(--text-secondary); font-weight: 600;
+  font-size: .68rem; text-transform: uppercase; letter-spacing: .05em;
+  padding: 11px 8px; text-align: center; white-space: nowrap;
+  border-bottom: 2px solid #cbd5e1; user-select: none;
+  transition: background var(--transition), color var(--transition);
+}
+[data-theme="dark"] th { background: #1e2130; color: var(--text-secondary); border-color: var(--rule); }
+
+th:first-child { padding-left: 18px; }
+th.row-num {
+  width: 42px; min-width: 42px; cursor: default; font-size: .63rem;
+  color: var(--text-tertiary); background: #e2e8f0; font-weight: 500; letter-spacing: 0;
+}
+[data-theme="dark"] th.row-num { background: #222636; }
+
+th.col-sticky { position: sticky; left: 0; z-index: 55; }
+th.col-sticky-2 { position: sticky; left: 42px; z-index: 55; }
+th.sortable { cursor: pointer; }
+th.sortable:hover { color: var(--primary); background: #dbeafe; }
+[data-theme="dark"] th.sortable:hover { background: #252a3a; }
+
+th .arrow { margin-left: 2px; font-size: .5rem; opacity: .2; }
+th .arrow.on { opacity: 1; color: var(--accent); }
+
+td { padding: 10px 8px; text-align: center; border-bottom: 1px solid var(--rule-light); transition: background var(--transition); }
+td:first-child { padding-left: 18px; }
+
+td.col-sticky { position: sticky; left: 0; z-index: 1; background: var(--surface); }
+td.col-sticky-2 { position: sticky; left: 42px; z-index: 1; background: var(--surface); }
+
+tbody tr:nth-child(even) td.col-sticky,
+tbody tr:nth-child(even) td.col-sticky-2 { background: rgba(0,0,0,.018); }
+[data-theme="dark"] tbody tr:nth-child(even) td.col-sticky,
+[data-theme="dark"] tbody tr:nth-child(even) td.col-sticky-2 { background: rgba(255,255,255,.012); }
+tbody tr:hover td.col-sticky,
+tbody tr:hover td.col-sticky-2 { background: #eef4ff !important; }
+[data-theme="dark"] tbody tr:hover td.col-sticky,
+[data-theme="dark"] tbody tr:hover td.col-sticky-2 { background: #1e2a3a !important; }
+tbody tr.pinned td.col-sticky,
+tbody tr.pinned td.col-sticky-2 {
+  background: #fffbeb !important; box-shadow: inset 3px 0 0 #f59e0b; position: sticky; z-index: 2;
+}
+[data-theme="dark"] tbody tr.pinned td.col-sticky,
+[data-theme="dark"] tbody tr.pinned td.col-sticky-2 { background: #2d2400 !important; }
+
+tbody tr { cursor: pointer; }
+tbody tr:nth-child(even) td { background: rgba(0,0,0,.012); }
+[data-theme="dark"] tbody tr:nth-child(even) td { background: rgba(255,255,255,.008); }
+tbody tr:hover td { background: #eef4ff !important; }
+[data-theme="dark"] tbody tr:hover td { background: #1e2a3a !important; }
+tbody tr.pinned td {
+  background: #fffbeb !important; box-shadow: inset 3px 0 0 #f59e0b; position: relative; z-index: 1;
+}
+[data-theme="dark"] tbody tr.pinned td { background: #2d2400 !important; box-shadow: inset 3px 0 0 #f59e0b; }
+
+td.row-num { font-size: .68rem; font-family: var(--font-mono); color: var(--text-tertiary); cursor: pointer; font-weight: 500; }
+
+/* School cells */
+.s-name { font-weight: 600; font-size: .85rem; color: var(--text); letter-spacing: -.01em; text-decoration: none; }
+.s-name:hover { color: var(--accent); text-decoration: underline; }
+.s-cn { font-size: .79rem; color: var(--text-secondary); font-weight: 400; }
+.s-cc {
+  font-size: .69rem; color: var(--text-tertiary); cursor: pointer;
+  border-radius: 4px; padding: 2px 6px; transition: all var(--transition);
+}
+.s-cc:hover { background: var(--primary-subtle); color: var(--primary); }
+.s-type { font-size: .7rem; color: var(--text-tertiary); }
+.s-type .badge-la {
+  display: inline-block; padding: 2px 8px; border-radius: 10px;
+  background: #ede9fe; color: #7c3aed; font-size: .65rem;
+  font-weight: 600; letter-spacing: .02em;
+}
+[data-theme="dark"] .s-type .badge-la { background: #1e1b4b; color: #a5b4fc; }
+
+mark { background: #fde68a; color: inherit; border-radius: 2px; padding: 0 2px; }
+[data-theme="dark"] mark { background: #7c6a0a; }
+
+/* Rank badges */
+.r {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 32px; height: 25px; padding: 0 8px; border-radius: 5px;
+  font-family: var(--font-mono); font-weight: 600; font-size: .82rem; line-height: 1;
+}
+.r-t1 { background: var(--tier1-bg); color: var(--tier1-fg); border: 1.5px solid var(--tier1-bd); font-weight: 700; }
+.r-t2 { background: var(--tier2-bg); color: var(--tier2-fg); border: 1px solid var(--tier2-bd); }
+.r-t3 { background: var(--tier3-bg); color: var(--tier3-fg); border: 1px solid var(--tier3-bd); }
+.r-t4 { background: var(--tier4-bg); color: var(--tier4-fg); border: 1px solid var(--tier4-bd); font-weight: 500; }
+.r-t5 { background: transparent; color: var(--text-secondary); }
+.r-best { outline: 2.5px solid var(--best-outline); outline-offset: 1px; border-radius: 6px; }
+.r-na { color: var(--text-tertiary); font-size: .68rem; font-weight: 400; }
+
+/* Offer badges */
+.offer-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 30px; height: 25px; padding: 0 10px; border-radius: 5px;
+  font-family: var(--font-mono); font-weight: 700; font-size: .8rem;
+  color: #fff; white-space: nowrap; cursor: default;
+}
+.off-0 { background: #94a3b8; color: #f1f5f9; }
+.off-1 { background: #0d9488; }
+.off-2 { background: #0f766e; }
+.off-3 { background: #115e59; }
+.off-4 { background: #134e4a; }
+.offer-none { color: var(--text-tertiary); font-size: .7rem; }
+
+/* Tooltips */
+[data-tooltip] { position: relative; }
+[data-tooltip]::after {
+  content: attr(data-tooltip); position: absolute; bottom: calc(100% + 6px);
+  left: 50%; transform: translateX(-50%); background: #0f172a; color: #f1f5f9;
+  padding: 5px 10px; border-radius: 5px; font-size: .68rem; white-space: nowrap;
+  pointer-events: none; opacity: 0; transition: opacity .15s;
+  font-weight: 400; letter-spacing: .01em; text-transform: none; z-index: 100;
+}
+[data-theme="dark"] [data-tooltip]::after { background: #e2e4ec; color: #0f172a; }
+[data-tooltip]:hover::after { opacity: 1; }
+
+/* Empty state */
+.empty { text-align: center; padding: 80px 20px; color: var(--text-tertiary); }
+.empty .empty-icon { font-size: 3rem; margin-bottom: 14px; opacity: .4; }
+.empty p { font-size: .88rem; margin-bottom: 6px; }
+.empty .hint { font-size: .76rem; opacity: .55; }
+
+/* Footnote */
+.footnote {
+  margin: 28px 28px 18px; padding: 14px 18px;
+  background: var(--surface-alt); border: 1px solid var(--rule);
+  border-radius: var(--radius-sm); font-size: .72rem;
+  color: var(--text-tertiary); line-height: 1.8;
+}
+.footnote b { color: var(--text-secondary); font-weight: 600; }
+.table-footer {
+  text-align: center; font-size: .73rem; color: var(--text-tertiary);
+  padding: 8px 0 28px; letter-spacing: .01em;
+}
+
+/* FAB */
+.fab {
+  position: fixed; bottom: 32px; right: 32px; z-index: 300;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--primary); color: #fff; border: none; cursor: pointer;
+  font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(30,58,138,.3);
+  opacity: 0; transform: translateY(20px); pointer-events: none;
+  transition: opacity var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+.fab.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.fab:hover { background: var(--primary-hover); transform: translateY(-3px); box-shadow: 0 6px 20px rgba(30,58,138,.35); }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 36px; left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: #0f172a; color: #f1f5f9; padding: 10px 24px;
+  border-radius: var(--radius-md); font-size: .8rem; z-index: 400;
+  opacity: 0; pointer-events: none;
+  transition: opacity .25s ease, transform .25s ease;
+  box-shadow: var(--shadow-lg); letter-spacing: .01em; font-weight: 500;
+}
+[data-theme="dark"] .toast { background: #f1f5f9; color: #0f172a; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* Responsive */
+@media (max-width: 1300px) { .stats-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 900px)  { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* ===== Mobile: shrink toolbar so the table is visible ===== */
+.mobile-toggle-bar { display: none; align-items: center; justify-content: space-between; padding: 6px 12px; background: var(--surface); border-bottom: 1px solid var(--rule); gap: 8px; }
+.mobile-toggle-btn { background: none; border: 1.5px solid var(--rule); border-radius: var(--radius-sm); color: var(--text-secondary); cursor: pointer; font-size: .76rem; font-family: inherit; padding: 4px 10px; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; font-weight: 500; }
+.mobile-toggle-btn:active { background: var(--primary-subtle); }
+
+@media (max-width: 768px) {
+  body { font-size: 12px; }
+  .toolbar { zoom: 1; }
+  .table-viewport { font-size: .76rem; }
+  .tb-section { padding: 5px 10px; }
+  .tb-title-row { padding-top: 6px; padding-bottom: 6px; gap: 6px; }
+  .tb-title { font-size: .9rem; }
+  .tb-brand-icon { width: 28px; height: 28px; font-size: .75rem; }
+  .tb-stats { font-size: .62rem; gap: 6px; }
+  .tb-stats .stat-val { font-size: .74rem; }
+  .tb-stats .stat-unit { font-size: .56rem; }
+  .mobile-toggle-bar { display: flex !important; }
+  .search-box { max-width: 100%; min-width: 120px; }
+  .sel { min-width: 50px; font-size: .7rem; padding: 0 20px 0 6px; height: 30px; }
+  .search-box input { height: 30px; font-size: .74rem; padding: 0 10px 0 30px; }
+  .search-box .search-icon { left: 8px; font-size: .75rem; }
+  .chip { font-size: .66rem; padding: 3px 9px; }
+  .tb-tips { display: none; }            /* hide tips on mobile */
+  .tb-tips.forced { display: flex; font-size: .62rem; padding: 5px 10px; }
+  .tb-tips .tips-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #statsBar { display: none; }           /* hide stats cards on mobile */
+  #statsBar.forced { display: block; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 5px; }
+  .stats-group { padding: 6px 8px; gap: 3px; }
+  .stats-group-label { font-size: .58rem; }
+  .sg-card .sg-val { font-size: .9rem; }
+  .sg-card .sg-label { font-size: .55rem; }
+  .tb-actions { font-size: .64rem; padding-top: 5px; padding-bottom: 5px; gap: 5px; }
+  .action-btn { font-size: .62rem; padding: 3px 8px; gap: 3px; }
+  .legend { display: none; }             /* hide legend on mobile */
+  .legend-item { font-size: .58rem; }
+  th, td { padding: 5px 3px; font-size: .65rem; }
+  td:first-child, th:first-child { padding-left: 8px; }
+  .chips-row { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .chips-row::-webkit-scrollbar { display: none; }
+  .chips { flex-wrap: nowrap; }
+  .kb-hint { font-size: .6rem; padding: 2px 7px; }
+  .custom-rank-panel { flex-wrap: wrap; }
+  .custom-rank-row { padding: 2px 6px; }
+  .custom-rank-label { font-size: .66rem; }
+  .custom-rank-num { width: 42px; height: 26px; font-size: .7rem; }
+  .sel-sm { height: 26px; font-size: .66rem; min-width: 80px; padding: 0 18px 0 5px; }
+  /* Collapsible: search+selects row stays; everything below is collapsible */
+  .tb-collapsible { display: none !important; }
+  .tb-collapsible.expanded { display: block !important; }
+}
+
+@media (max-width: 480px) {
+  .tb-section { padding: 4px 6px; }
+  .tb-title-row { padding-top: 5px; padding-bottom: 5px; }
+  .tb-title { font-size: .78rem; }
+  .tb-stats { font-size: .56rem; gap: 4px; }
+  .tb-stats .stat-val { font-size: .66rem; }
+  .tb-stats .stat-unit { display: none; }
+  .tb-stats .stat-item:nth-child(2) { display: none; }
+  .sel { min-width: 40px; font-size: .62rem; }
+  .chip { font-size: .6rem; padding: 2px 7px; }
+  .stats-grid { grid-template-columns: 1fr; gap: 4px; }
+  .tb-actions .left { display: none; }
+  .action-btn { font-size: .58rem; padding: 2px 6px; }
+  th { font-size: .52rem; padding: 5px 1px; }
+  th .arrow { font-size: .35rem; }
+  td { padding: 4px 1px; font-size: .6rem; }
+  td:first-child, th:first-child { padding-left: 4px; }
+  th.row-num { width: 24px; min-width: 24px; font-size: .48rem; }
+  th.col-sticky-2 { left: 24px; }
+  td.col-sticky-2 { left: 24px; }
+  .s-name { font-size: .66rem; }
+  .s-cn { font-size: .6rem; }
+  .toast { font-size: .66rem; padding: 6px 12px; bottom: 20px; }
+  .fab { width: 36px; height: 36px; bottom: 16px; right: 12px; font-size: 1rem; }
+}
+
+/* Print */
+@media print {
+  html, body { height: auto; overflow: visible; }
+  .toolbar { position: static; box-shadow: none; border-bottom: 2px solid #000; zoom: 1; }
+  .toolbar::before { display: none; }
+  .table-viewport { overflow: visible; }
+  thead { position: static; }
+  .fab, .col-toggle-wrap, .action-btn, .chips, .stats-grid, #statsBar, .theme-toggle, #tipsBar, .kb-hint { display: none !important; }
+  td.col-sticky, td.col-sticky-2, th.col-sticky, th.col-sticky-2 { position: static !important; }
+  th { background: #e5e5e5 !important; color: #000 !important; -webkit-print-color-adjust: exact; }
+  .r-t1, .r-t2, .r-t3, .r-best { -webkit-print-color-adjust: exact; }
+  body { font-size: 10px; }
+}
+
+/* System dark mode fallback (auto) */
+@media (prefers-color-scheme: dark) {
+  [data-theme="auto"] {
+    --bg: #0f1117; --surface: #1a1d27; --surface-alt: #1e2130;
+    --text: #e2e4ec; --text-secondary: #a8acb8; --text-tertiary: #6b6f7b;
+    --primary: #60a5fa; --primary-hover: #93bbfd; --primary-light: #1e293b; --primary-subtle: #172033;
+    --accent: #3b82f6; --accent-light: #1e293b;
+    --gold: #fbbf24; --gold-light: #2d2400; --gold-border: #92400e;
+    --emerald: #34d399; --emerald-light: #022c22; --emerald-border: #065f46;
+    --rule: #2a2d3a; --rule-light: #222533;
+    --shadow-xs: 0 1px 2px rgba(0,0,0,.3); --shadow-sm: 0 1px 4px rgba(0,0,0,.35);
+    --shadow-md: 0 4px 14px rgba(0,0,0,.4); --shadow-lg: 0 8px 28px rgba(0,0,0,.45);
+    --tier1-bg: #3b2800; --tier1-fg: #fbbf24; --tier1-bd: #92400e;
+    --tier2-bg: #1e293b; --tier2-fg: #cbd5e1; --tier2-bd: #334155;
+    --tier3-bg: #19212b; --tier3-fg: #94a3b8; --tier3-bd: #2e3644;
+    --tier4-bg: transparent; --tier4-fg: #60a5fa; --tier4-bd: #1e3a5f;
+    --tier5-fg: #6b6f7b; --best-outline: #fbbf24;
+  }
+  [data-theme="auto"] .toolbar::before { background: linear-gradient(90deg, #1e3a8a 0%, #60a5fa 50%, #34d399 100%); }
+  [data-theme="auto"] th { background: #1e2130; color: var(--text-secondary); border-color: var(--rule); }
+  [data-theme="auto"] th.row-num { background: #222636; }
+  [data-theme="auto"] th.sortable:hover { background: #252a3a; }
+  [data-theme="auto"] tbody tr:nth-child(even) td { background: rgba(255,255,255,.008); }
+  [data-theme="auto"] tbody tr:nth-child(even) td.col-sticky,
+  [data-theme="auto"] tbody tr:nth-child(even) td.col-sticky-2 { background: rgba(255,255,255,.012); }
+  [data-theme="auto"] tbody tr:hover td { background: #1e2a3a !important; }
+  [data-theme="auto"] tbody tr:hover td.col-sticky,
+  [data-theme="auto"] tbody tr:hover td.col-sticky-2 { background: #1e2a3a !important; }
+  [data-theme="auto"] tbody tr.pinned td { background: #2d2400 !important; box-shadow: inset 3px 0 0 #f59e0b; }
+  [data-theme="auto"] tbody tr.pinned td.col-sticky,
+  [data-theme="auto"] tbody tr.pinned td.col-sticky-2 { background: #2d2400 !important; }
+  [data-theme="auto"] .r-t1 { background: #3b2800; color: #fbbf24; border-color: #92400e; }
+  [data-theme="auto"] .r-t2 { background: #1e293b; color: #cbd5e1; border-color: #334155; }
+  [data-theme="auto"] .r-t3 { background: #19212b; color: #94a3b8; border-color: #2e3644; }
+  [data-theme="auto"] .r-best { outline-color: #fbbf24; }
+  [data-theme="auto"] .footnote { background: #1e2130; border-color: #2a2d3a; }
+  [data-theme="auto"] .col-toggle-menu { background: #1a1d27; border-color: #2a2d3a; }
+  [data-theme="auto"] .col-toggle-menu label:hover { background: #172033; }
+  [data-theme="auto"] kbd { border-color: #4b4b55; background: #35353d; color: #d1d1d8; }
+  [data-theme="auto"] .s-type .badge-la { background: #1e1b4b; color: #a5b4fc; }
+  [data-theme="auto"] .s-cc:hover { background: #172033; color: #60a5fa; }
+  [data-theme="auto"] .search-box input { background: #1a1d27; }
+  [data-theme="auto"] .stats-group { background: #1e2130; border-color: #2a2d3a; }
+  [data-theme="auto"] .stats-group:hover { border-color: #3a3d4a; }
+  [data-theme="auto"] .stats-group-cards .sg-card { background: #1a1d27; border-color: #2a2d3a; }
+  [data-theme="auto"] .stats-group-cards .sg-card:hover { border-color: #3a3d4a; }
+  [data-theme="auto"] .sg-card .sg-val { color: #60a5fa; }
+  [data-theme="auto"] mark { background: #7c6a0a; }
+  [data-theme="auto"] [data-tooltip]::after { background: #e2e4ec; color: #0f172a; }
+  [data-theme="auto"] .toast { background: #f1f5f9; color: #0f172a; }
+  [data-theme="auto"] .kb-hint { background: #1a2740; border-color: #1e3a8a; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== TOOLBAR ===== -->
+<div class="toolbar">
+  <!-- Row 1: Title + Summary -->
+  <div class="tb-section tb-title-row">
+    <div class="tb-brand">
+      <div class="tb-brand-icon">SID</div>
+      <h1 class="tb-title">世界大学排名汇总 2027</h1>
+    </div>
+    <div class="tb-stats">
+      <span class="stat-item" title="数据库中收录的院校总数">📋 <span class="stat-val" id="totalN">0</span><span class="stat-unit">所院校</span></span>
+      <span class="stat-item" title="SID 2026 届毕业生录取总份数">🎓 <span class="stat-val" id="totalOffers">0</span><span class="stat-unit">份录取</span></span>
+      <span class="stat-item" title="当前筛选条件下的院校数">📊 <span class="stat-val" id="filteredN" style="color:var(--accent)">0</span><span class="stat-unit">所匹配</span></span>
+      <button class="theme-toggle" id="themeToggle" onclick="cycleTheme()" title="切换浅色/深色/自动模式">🌓</button>
+    </div>
+  </div>
+
+  <!-- Row 2: Search + Filters -->
+  <div class="tb-section tb-controls" id="searchFiltersRow">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search" placeholder="搜索学校名称 / 中文名 / 地区…" oninput="doFilter()" autocomplete="off" aria-label="搜索学校">
+      <button class="clear-btn" id="clearSearch" onclick="clearSearch()" title="清空搜索 (Esc)">✕</button>
+    </div>
+    <select class="sel" id="filterCountry" onchange="doFilter()" aria-label="筛选地区"><option value="">🌏 全部地区</option></select>
+    <select class="sel" id="filterType" onchange="doFilter()" aria-label="筛选类型">
+      <option value="">🏫 全部类型</option><option value="综合大学">综合大学</option><option value="文理学院">文理学院</option><option value="艺术类">艺术类</option>
+    </select>
+    <select class="sel" id="filterRank" onchange="onRankFilterChange()" aria-label="排名筛选">
+      <option value="">🏆 排名筛选</option>
+      <optgroup label="USNews 2027 全球"><option value="usn200">前 200 名</option><option value="usn100">前 100 名</option><option value="usn50">前 50 名</option><option value="usn30">前 30 名</option><option value="usn20">前 20 名</option><option value="usn10">前 10 名</option></optgroup>
+      <optgroup label="QS 2027 全球"><option value="qs200">前 200 名</option><option value="qs100">前 100 名</option><option value="qs50">前 50 名</option><option value="qs30">前 30 名</option><option value="qs20">前 20 名</option><option value="qs10">前 10 名</option></optgroup>
+      <optgroup label="THE 2026 全球"><option value="th200">前 200 名</option><option value="th100">前 100 名</option><option value="th50">前 50 名</option><option value="th30">前 30 名</option><option value="th20">前 20 名</option><option value="th10">前 10 名</option></optgroup>
+      <optgroup label="USNews 2026 美国"><option value="usnus50">前 50 名</option><option value="usnus30">前 30 名</option><option value="usnus20">前 20 名</option></optgroup>
+      <optgroup label="USNews 2026 文理"><option value="usnla30">前 30 名</option><option value="usnla20">前 20 名</option><option value="usnla10">前 10 名</option></optgroup>
+      <optgroup label="跨榜综合筛选"><option value="any50">任一榜前 50</option><option value="any100">任一榜前 100</option><option value="all50">三榜均前 50</option><option value="all100">三榜均前 100</option></optgroup>
+      <optgroup label="自定义"><option value="custom">✏️ 自定义…</option></optgroup>
+    </select>
+    <span class="kb-hint" id="activeFilterHint" style="display:none">已筛选 <kbd>Esc</kbd> 重置</span>
+    <div class="custom-rank-panel" id="customRankPanel" style="display:none">
+      <span class="custom-rank-row">
+        <select class="sel sel-sm" id="customRankField" onchange="onCustomRankChange()">
+          <option value="usn_global">USNews 全球</option><option value="qs_global">QS 全球</option><option value="the_global">THE 全球</option><option value="usn_us">USNews 美国</option><option value="usn_la">USNews 文理</option>
+        </select>
+        <span class="custom-rank-label"> ≤ 前</span>
+        <input type="number" class="custom-rank-num" id="customRankNum" value="50" min="1" max="1000" oninput="onCustomRankChange()" aria-label="自定义排名阈值">
+        <span class="custom-rank-label">名</span>
+        <button class="action-btn" onclick="closeCustomRank()" title="关闭自定义" style="font-size:.68rem;padding:3px 8px">✕</button>
+      </span>
+    </div>
+  </div>
+
+  <!-- Mobile: toggle bar (only visible on small screens) -->
+  <div class="mobile-toggle-bar" id="mobileToggleBar">
+    <button class="mobile-toggle-btn" id="mobileOptsBtn" onclick="toggleMobileOpts()">⚙️ 筛选</button>
+    <span style="font-size:.66rem;color:var(--text-tertiary)">显示 <strong id="showNM" style="font-family:var(--font-mono);color:var(--accent)">0</strong> 所</span>
+  </div>
+
+  <!-- Collapsible: everything below search row that's heavy on mobile -->
+  <div class="tb-collapsible" id="mobileCollapse">
+  <!-- Row 3: Chips -->
+  <div class="tb-section tb-controls compact chips-row">
+    <div class="chips" id="chips">
+      <button class="chip active" data-chip="all" onclick="chipFilter('all',this)">🌐 全部</button>
+      <button class="chip" data-chip="china" onclick="chipFilter('china',this)">🇨🇳 中国大陆</button>
+      <button class="chip" data-chip="us" onclick="chipFilter('us',this)">🇺🇸 美国</button>
+      <button class="chip" data-chip="uk" onclick="chipFilter('uk',this)">🇬🇧 英国</button>
+      <button class="chip" data-chip="hk" onclick="chipFilter('hk',this)">🇭🇰 中国香港</button>
+      <button class="chip" data-chip="sg" onclick="chipFilter('sg',this)">🇸🇬 新加坡</button>
+      <button class="chip" data-chip="au" onclick="chipFilter('au',this)">🇦🇺 澳洲</button>
+      <button class="chip" data-chip="ca" onclick="chipFilter('ca',this)">🇨🇦 加拿大</button>
+      <button class="chip" data-chip="other" onclick="chipFilter('other',this)">🌍 其他</button>
+    </div>
+  </div>
+
+  <!-- Row 4: Tips bar -->
+  <div class="tb-section tb-tips" id="tipsBar">
+    <span class="tips-icon">💡</span>
+    <span class="tips-text">点击表头排序 · 点击行固定（可多选，跨排序保持）· 点击地区名快速筛选 · 校名可打开官网 · 滚动时学校名称列固定 · <kbd>Ctrl+K</kbd> 搜索 <kbd>Esc</kbd> 清空/重置 <kbd>Ctrl+Z</kbd> 重置 <kbd>Ctrl+S</kbd> 导出 <kbd>Ctrl+D</kbd> 切换主题</span>
+    <button class="tips-dismiss" id="tipsDismiss" onclick="dismissTips()" title="关闭提示" style="margin-left:auto;background:none;border:none;cursor:pointer;color:var(--text-tertiary);font-size:.85rem;padding:2px 6px;border-radius:4px">✕</button>
+  </div>
+
+  <!-- Row 5: Stats cards -->
+  <div class="tb-section tb-controls compact" id="statsBar">
+    <div class="stats-grid" id="statsBarInner"></div>
+  </div>
+
+  <!-- Row 6: Actions + Legend -->
+  <div class="tb-section tb-actions">
+    <div class="left">
+      <span>显示 <strong id="showN" style="font-family:var(--font-mono);font-size:.95rem;color:var(--accent)">0</strong> 所院校</span>
+      <span class="legend">
+        <span class="legend-item"><span class="legend-dot" style="background:var(--tier1-bg);border:1.5px solid var(--tier1-bd)"></span> 第 1 名</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--tier2-bg);border:1px solid var(--tier2-bd)"></span> 第 2–3</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--tier3-bg);border:1px solid var(--tier3-bd)"></span> 第 4–10</span>
+        <span class="legend-item"><span class="legend-dot" style="background:transparent;outline:2.5px solid var(--best-outline);outline-offset:1px"></span> 该校最优排名</span>
+        <span class="legend-item" style="color:var(--text-tertiary)">— 未入榜</span>
+      </span>
+    </div>
+    <div class="right">
+      <button class="action-btn" onclick="toggleDensity()" title="紧凑/舒适行高">📏 行高</button>
+      <div class="col-toggle-wrap">
+        <button class="action-btn" id="colToggleBtn" onclick="toggleColMenu()" title="显示/隐藏列">☰ 列</button>
+        <div class="col-toggle-menu" id="colMenu"></div>
+      </div>
+      <button class="action-btn" onclick="copyTable()" title="复制当前视图为制表符分隔文本">📋 复制</button>
+      <button class="action-btn" onclick="exportCSV()" title="导出当前视图为 CSV 文件 (Ctrl+S)">📥 导出</button>
+      <button class="action-btn primary" onclick="window.print()" title="打印当前视图">🖨 打印</button>
+      <button class="action-btn" onclick="resetAll()" title="重置所有筛选与排序 (Ctrl+Z)">↺ 重置</button>
+    </div>
+  </div>
+</div><!-- end tb-collapsible -->
+</div>
+
+<!-- ===== TABLE VIEWPORT ===== -->
+<div class="table-viewport" id="viewport">
+  <table class="sticky-table">
+    <thead>
+      <tr>
+        <th class="row-num col-sticky">#</th>
+        <th class="sortable col-sticky-2" onclick="setSort('name')" data-tooltip="点击排序">学校名称 <span class="arrow" id="ar-name"></span></th>
+        <th class="sortable" onclick="setSort('sid_offers')" data-tooltip="SID 2026 届录取总份数">SID<br>录取数 <span class="arrow" id="ar-sid_offers"></span></th>
+        <th class="sortable" onclick="setSort('cn')" data-tooltip="点击排序">中文名 <span class="arrow" id="ar-cn"></span></th>
+        <th class="sortable" onclick="setSort('country')" data-tooltip="点击排序">地区 <span class="arrow" id="ar-country"></span></th>
+        <th class="sortable" onclick="setSort('type')" data-tooltip="综合大学 / 文理学院 / 艺术类">类型 <span class="arrow" id="ar-type"></span></th>
+        <th class="sortable" onclick="setSort('usn_global')" data-tooltip="U.S. News 2027 全球大学排名">USNews<br>2027 全球 <span class="arrow" id="ar-usn_global"></span></th>
+        <th class="sortable" onclick="setSort('qs_global')" data-tooltip="QS World University Rankings 2027">QS<br>2027 全球 <span class="arrow" id="ar-qs_global"></span></th>
+        <th class="sortable" onclick="setSort('the_global')" data-tooltip="Times Higher Education 2026 世界大学排名">THE<br>2026 全球 <span class="arrow" id="ar-the_global"></span></th>
+        <th class="sortable" onclick="setSort('usn_us')" data-tooltip="U.S. News 2026 美国大学排名（仅限美国院校）">USNews<br>2026 美国 <span class="arrow" id="ar-usn_us"></span></th>
+        <th class="sortable" onclick="setSort('usn_la')" data-tooltip="U.S. News 2026 文理学院排名（仅限文理学院）">USNews<br>2026 文理 <span class="arrow" id="ar-usn_la"></span></th>
+      </tr>
+    </thead>
+    <tbody id="tb"></tbody>
+  </table>
+  <div class="empty" id="emptyMsg" style="display:none">
+    <div class="empty-icon">📭</div>
+    <p>没有匹配的院校</p>
+    <p class="hint">试试调整筛选条件、清空搜索框或点击 <button onclick="resetAll()" style="background:none;border:1px solid var(--rule);border-radius:4px;color:var(--text-secondary);cursor:pointer;font-family:inherit;font-size:.76rem;padding:2px 10px">↺ 重置全部</button></p>
+  </div>
+  <div class="footnote">
+    <b>📝 数据说明</b><br>
+    USNews 2026 美国大学、文理学院排名及 THE 2026 世界大学排名来自 2026 年官方版本（2027 版尚未发布）。
+  </div>
+  <div class="table-footer">本工具由 SID 2026 届毕业生姚皓天制作 · 为深圳高级中学（集团）国际课程体系升学指导参考</div>
+</div>
+
+<button class="fab" id="fabTop" onclick="scrollToTop()" title="回到顶部" aria-label="回到顶部">↑</button>
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== DATA =====
+const DATA = [{"name": "Imperial College London", "cn": "帝国理工学院", "country": "United Kingdom", "type": "综合大学", "usn_global": 14, "usn_us": null, "usn_la": null, "qs_global": 2, "the_global": 8, "sid_offers": 6, "url": "https://www.imperial.ac.uk/"}, {"name": "University of California, Berkeley (UCB)", "cn": "加州大学伯克利分校", "country": "United States", "type": "综合大学", "usn_global": 7, "usn_us": 15, "usn_la": null, "qs_global": 20, "the_global": 9, "sid_offers": 4, "url": "https://www.berkeley.edu/"}, {"name": "UCL", "cn": "伦敦大学学院", "country": "United Kingdom", "type": "综合大学", "usn_global": 9, "usn_us": null, "usn_la": null, "qs_global": 8, "the_global": 22, "sid_offers": 41, "url": "https://www.ucl.ac.uk/"}, {"name": "Columbia University", "cn": "哥伦比亚大学", "country": "United States", "type": "综合大学", "usn_global": 10, "usn_us": 15, "usn_la": null, "qs_global": 43, "the_global": 20, "sid_offers": 1, "url": "https://www.columbia.edu/"}, {"name": "University of California, Los Angeles (UCLA)", "cn": "加州大学洛杉矶分校", "country": "United States", "type": "综合大学", "usn_global": 11, "usn_us": 17, "usn_la": null, "qs_global": 49, "the_global": 18, "sid_offers": 2, "url": "https://www.ucla.edu/"}, {"name": "The University of Hong Kong", "cn": "香港大学", "country": "Hong Kong SAR", "type": "综合大学", "usn_global": 40, "usn_us": null, "usn_la": null, "qs_global": 11, "the_global": 33, "sid_offers": 18, "url": "https://www.hku.hk/"}, {"name": "Nanyang Technological University, Singapore (NTU)", "cn": "新加坡南洋理工大学", "country": "Singapore", "type": "综合大学", "usn_global": 27, "usn_us": null, "usn_la": null, "qs_global": 12, "the_global": 31, "sid_offers": 2, "url": "https://www.ntu.edu.sg/"}, {"name": "University of Washington, Seattle", "cn": "华盛顿大学西雅图分校", "country": "United States", "type": "综合大学", "usn_global": 12, "usn_us": 42, "usn_la": null, "qs_global": 92, "the_global": 25, "sid_offers": 6, "url": "https://www.washington.edu/"}, {"name": "Cornell University", "cn": "康奈尔大学", "country": "United States", "type": "综合大学", "usn_global": 13, "usn_us": 12, "usn_la": null, "qs_global": 16, "the_global": 18, "sid_offers": 1, "url": "https://www.cornell.edu/"}, {"name": "The Chinese University of Hong Kong (CUHK)", "cn": "香港中文大学", "country": "Hong Kong SAR", "type": "综合大学", "usn_global": 28, "usn_us": null, "usn_la": null, "qs_global": 18, "the_global": 41, "sid_offers": 15, "url": "https://www.cuhk.edu.hk/"}, {"name": "The University of New South Wales (UNSW Sydney)", "cn": "新南威尔士大学", "country": "Australia", "type": "综合大学", "usn_global": 33, "usn_us": null, "usn_la": null, "qs_global": 19, "the_global": 79, "sid_offers": 2, "url": "https://www.unsw.edu.au/"}, {"name": "University of Toronto", "cn": "多伦多大学", "country": "Canada", "type": "综合大学", "usn_global": 20, "usn_us": null, "usn_la": null, "qs_global": 32, "the_global": 21, "sid_offers": 15, "url": "https://www.utoronto.ca/"}, {"name": "University of Michigan-Ann Arbor", "cn": "密歇根大学安娜堡分校", "country": "United States", "type": "综合大学", "usn_global": 21, "usn_us": 20, "usn_la": null, "qs_global": 51, "the_global": 23, "sid_offers": 1, "url": "https://umich.edu/"}, {"name": "The University of Melbourne", "cn": "墨尔本大学", "country": "Australia", "type": "综合大学", "usn_global": 28, "usn_us": null, "usn_la": null, "qs_global": 22, "the_global": 37, "sid_offers": 13, "url": "https://www.unimelb.edu.au/"}, {"name": "University of California, San Diego (UCSD)", "cn": "加州大学圣地亚哥分校", "country": "United States", "type": "综合大学", "usn_global": 23, "usn_us": 29, "usn_la": null, "qs_global": 81, "the_global": 47, "sid_offers": 11, "url": "https://www.ucsd.edu/"}, {"name": "The University of Sydney", "cn": "悉尼大学", "country": "Australia", "type": "综合大学", "usn_global": 31, "usn_us": null, "usn_la": null, "qs_global": 28, "the_global": 53, "sid_offers": 14, "url": "https://www.sydney.edu.au/"}, {"name": "Australian National University (ANU)", "cn": "澳大利亚国立大学", "country": "Australia", "type": "综合大学", "usn_global": 81, "usn_us": null, "usn_la": null, "qs_global": 29, "the_global": 73, "sid_offers": 1, "url": "https://www.anu.edu.au/"}, {"name": "Monash University", "cn": "莫纳什大学", "country": "Australia", "type": "综合大学", "usn_global": 38, "usn_us": null, "usn_la": null, "qs_global": 31, "the_global": 58, "sid_offers": 1, "url": "https://www.monash.edu/"}, {"name": "The Hong Kong University of Science and Technology", "cn": "香港科技大学", "country": "Hong Kong SAR", "type": "综合大学", "usn_global": 82, "usn_us": null, "usn_la": null, "qs_global": 33, "the_global": 58, "sid_offers": 20, "url": "https://www.hkust.edu.hk/"}, {"name": "The University of Edinburgh", "cn": "爱丁堡大学", "country": "United Kingdom", "type": "综合大学", "usn_global": 41, "usn_us": null, "usn_la": null, "qs_global": 35, "the_global": 29, "sid_offers": 19, "url": "https://www.ed.ac.uk/"}, {"name": "New York University (NYU)", "cn": "纽约大学", "country": "United States", "type": "综合大学", "usn_global": 36, "usn_us": 32, "usn_la": null, "qs_global": 58, "the_global": 31, "sid_offers": 4, "url": "https://www.nyu.edu/"}, {"name": "King's College London", "cn": "伦敦国王学院", "country": "United Kingdom", "type": "综合大学", "usn_global": 42, "usn_us": null, "usn_la": null, "qs_global": 37, "the_global": 38, "sid_offers": 23, "url": "https://www.kcl.ac.uk/"}, {"name": "University of Amsterdam", "cn": "阿姆斯特丹大学", "country": "Netherlands", "type": "综合大学", "usn_global": 39, "usn_us": null, "usn_la": null, "qs_global": 60, "the_global": 62, "sid_offers": 1, "url": "https://www.uva.nl/"}, {"name": "The University of Queensland", "cn": "昆士兰大学", "country": "Australia", "type": "综合大学", "usn_global": 42, "usn_us": null, "usn_la": null, "qs_global": 40, "the_global": 80, "sid_offers": 2, "url": "https://www.uq.edu.au/"}, {"name": "The University of Manchester", "cn": "曼彻斯特大学", "country": "United Kingdom", "type": "综合大学", "usn_global": 68, "usn_us": null, "usn_la": null, "qs_global": 40, "the_global": 56, "sid_offers": 36, "url": "https://www.manchester.ac.uk/"}, {"name": "University of British Columbia", "cn": "不列颠哥伦比亚大学", "country": "Canada", "type": "综合大学", "usn_global": 42, "usn_us": null, "usn_la": null, "qs_global": 45, "the_global": 45, "sid_offers": 1, "url": "https://www.ubc.ca/"}, {"name": "City University of Hong Kong (CityUHK)", "cn": "香港城市大学", "country": "Hong Kong SAR", "type": "综合大学", "usn_global": 47, "usn_us": null, "usn_la": null, "qs_global": 52, "the_global": 75, "sid_offers": 17, "url": "https://www.cityu.edu.hk/"}, {"name": "The Hong Kong Polytechnic University", "cn": "香港理工大学", "country": "Hong Kong SAR", "type": "综合大学", "usn_global": 52, "usn_us": null, "usn_la": null, "qs_global": 50, "the_global": 83, "sid_offers": 14, "url": "https://www.polyu.edu.hk/"}, {"name": "University of North Carolina at Chapel Hill", "cn": "北卡罗来纳大学教堂山分校", "country": "United States", "type": "综合大学", "usn_global": 55, "usn_us": 26, "usn_la": null, "qs_global": 158, "the_global": 78, "sid_offers": 6, "url": "https://www.unc.edu/"}, {"name": "University of Bristol", "cn": "布里斯托大学", "country": "United Kingdom", "type": "综合大学", "usn_global": 115, "usn_us": null, "usn_la": null, "qs_global": 57, "the_global": 80, "sid_offers": 6, "url": "https://www.bristol.ac.uk/"}, {"name": "University of Wisconsin-Madison", "cn": "威斯康星大学麦迪逊分校", "country": "United States", "type": "综合大学", "usn_global": 60, "usn_us": 36, "usn_la": null, "qs_global": 131, "the_global": 53, "sid_offers": 13, "url": "https://www.wisc.edu/"}, {"name": "The London School of Economics and Political Science (LSE)", "cn": "伦敦政治经济学院", "country": "United Kingdom", "type": "综合大学", "usn_global": 223, "usn_us": null, "usn_la": null, "qs_global": 62, "the_global": 52, "sid_offers": 3, "url": "https://www.lse.ac.uk/"}, {"name": "Emory University", "cn": "埃默里大学", "country": "United States", "type": "综合大学", "usn_global": 64, "usn_us": 24, "usn_la": null, "qs_global": 183, "the_global": 102, "sid_offers": 1, "url": "https://www.emory.edu/"}, {"name": "University of Birmingham", "cn": "伯明翰大学", "country": "United Kingdom", "type": "综合大学", "usn_global": 97, "usn_us": null, "usn_la": null, "qs_global": 68, "the_global": 98, "sid_offers": 6, "url": "https://www.birmingham.ac.uk/"}, {"name": "University of Southern California", "cn": "南加州大学", "country": "United States", "type": "综合大学", "usn_global": 74, "usn_us": 28, "usn_la": null, "qs_global": 153, "the_global": 73, "sid_offers": 2, "url": "https://www.usc.edu/"}, {"name": "University of Illinois Urbana-Champaign", "cn": "伊利诺伊大学厄巴纳-香槟分校", "country": "United States", "type": "综合大学", "usn_global": 98, "usn_us": 36, "usn_la": null, "qs_global": 74, "the_global": 41, "sid_offers": 12, "url": "https://illinois.edu/"}, {"name": "University of Minnesota, Twin Cities", "cn": "明尼苏达大学双城分校", "country": "United States", "type": "综合大学", "usn_global": 76, "usn_us": 59, "usn_la": null, "qs_global": 255, "the_global": 88, "sid_offers": 6, "url": "https://twin-cities.umn.edu/"}, {"name": "University of Glasgow", "cn": "格拉斯哥大学", "country": "United Kingdom", "type": "综合大学", "usn_global": 77, "usn_us": null, "usn_la": null, "qs_global": 80, "the_global": 84, "sid_offers": 2, "url": "https://www.gla.ac.uk/"}, {"name": "University of Leeds", "cn": "利兹大学", "country": "United Kingdom", "type": "综合大学", "usn_global": 146, "usn_us": null, "usn_la": null, "qs_global": 77, "the_global": 118, "sid_offers": 4, "url": "https://www.leeds.ac.uk/"}, {"name": "The University of Sheffield", "cn": "谢菲尔德大学", "country": "United Kingdom", "type": "综合大学", "usn_global": 186, "usn_us": null, "usn_la": null, "qs_global": 82, "the_global": 108, "sid_offers": 1, "url": "https://www.sheffield.ac.uk/"}, {"name": "University of Warwick", "cn": "华威大学", "country": "United Kingdom", "type": "综合大学", "usn_global": 200, "usn_us": null, "usn_la": null, "qs_global": 68, "the_global": 122, "sid_offers": 19, "url": "https://warwick.ac.uk/"}, {"name": "Durham University", "cn": "杜伦大学", "country": "United Kingdom", "type": "综合大学", "usn_global": 270, "usn_us": null, "usn_la": null, "qs_global": 85, "the_global": 175, "sid_offers": 1, "url": "https://www.durham.ac.uk/"}, {"name": "Pennsylvania State University", "cn": "宾夕法尼亚州立大学", "country": "United States", "type": "综合大学", "usn_global": 92, "usn_us": null, "usn_la": null, "qs_global": 92, "the_global": null, "sid_offers": 4, "url": "https://www.psu.edu/"}, {"name": "Boston University", "cn": "波士顿大学", "country": "United States", "type": "综合大学", "usn_global": 96, "usn_us": 42, "usn_la": null, "qs_global": 94, "the_global": 76, "sid_offers": 4, "url": "https://www.bu.edu/"}, {"name": "University of California, Davis", "cn": "加州大学戴维斯分校", "country": "United States", "type": "综合大学", "usn_global": 95, "usn_us": 32, "usn_la": null, "qs_global": 137, "the_global": 64, "sid_offers": 29, "url": "https://www.ucdavis.edu/"}, {"name": "University of Nottingham", "cn": "诺丁汉大学", "country": "United Kingdom", "type": "综合大学", "usn_global": 155, "usn_us": null, "usn_la": null, "qs_global": 97, "the_global": 145, "sid_offers": 3, "url": "https://www.nottingham.ac.uk/"}, {"name": "University of California, Irvine", "cn": "加州大学尔湾分校", "country": "United States", "type": "综合大学", "usn_global": 99, "usn_us": 32, "usn_la": null, "qs_global": 252, "the_global": 97, "sid_offers": 24, "url": "https://www.uci.edu/"}, {"name": "University of California, Santa Barbara", "cn": "加州大学圣塔芭芭拉分校", "country": "United States", "type": "综合大学", "usn_global": 100, "usn_us": 40, "usn_la": null, "qs_global": 173, "the_global": 72, "sid_offers": 18, "url": "https://www.ucsb.edu/"}, {"name": "University of California, Santa Cruz", "cn": "加州大学圣克鲁兹分校", "country": "United States", "type": "综合大学", "usn_global": 141, "usn_us": 88, "usn_la": null, "qs_global": 458, "the_global": 181, "sid_offers": 4, "url": "https://www.ucsc.edu/"}, {"name": "University of California, Merced", "cn": "加利福尼亚大学默塞德分校", "country": "United States", "type": "综合大学", "usn_global": 739, "usn_us": 57, "usn_la": null, "qs_global": null, "the_global": null, "sid_offers": 8, "url": "https://www.ucmerced.edu/"}, {"name": "University of Southampton", "cn": "南安普敦大学", "country": "United Kingdom", "type": "综合大学", "usn_global": 125, "usn_us": null, "usn_la": null, "qs_global": 111, "the_global": 129, "sid_offers": 2, "url": "https://www.southampton.ac.uk/"}, {"name": "University of Waterloo", "cn": "滑铁卢大学", "country": "Canada", "type": "综合大学", "usn_global": 199, "usn_us": null, "usn_la": null, "qs_global": 113, "the_global": 162, "sid_offers": 3, "url": "https://uwaterloo.ca/"}, {"name": "Michigan State University", "cn": "密歇根州立大学", "country": "United States", "type": "综合大学", "usn_global": 127, "usn_us": 64, "usn_la": null, "qs_global": 182, "the_global": 105, "sid_offers": 3, "url": "https://msu.edu/"}, {"name": "Stony Brook University–SUNY", "cn": "纽约州立大学石溪分校", "country": "United States", "type": "综合大学", "usn_global": 236, "usn_us": 59, "usn_la": null, "qs_global": 468, "the_global": null, "sid_offers": 6, "url": "https://www.stonybrook.edu/"}, {"name": "Indiana University–Bloomington", "cn": "印第安纳大学伯明顿分校", "country": "United States", "type": "综合大学", "usn_global": 155, "usn_us": 73, "usn_la": null, "qs_global": 360, "the_global": 198, "sid_offers": 1, "url": "https://www.indiana.edu/"}, {"name": "University at Buffalo–SUNY", "cn": "纽约州立大学布法罗分校", "country": "United States", "type": "综合大学", "usn_global": 369, "usn_us": 75, "usn_la": null, "qs_global": 416, "the_global": null, "sid_offers": 1, "url": "https://www.buffalo.edu/"}, {"name": "Newcastle University", "cn": "纽卡斯尔大学", "country": "United Kingdom", "type": "综合大学", "usn_global": 202, "usn_us": null, "usn_la": null, "qs_global": 149, "the_global": 144, "sid_offers": 1, "url": "https://www.ncl.ac.uk/"}, {"name": "McMaster University", "cn": "麦克马斯特大学", "country": "Canada", "type": "综合大学", "usn_global": 150, "usn_us": null, "usn_la": null, "qs_global": 174, "the_global": 116, "sid_offers": 1, "url": "https://www.mcmaster.ca/"}, {"name": "Rutgers University–New Brunswick", "cn": "罗格斯大学", "country": "United States", "type": "综合大学", "usn_global": 155, "usn_us": 42, "usn_la": null, "qs_global": 314, "the_global": null, "sid_offers": 17, "url": "https://www.rutgers.edu/"}, {"name": "University of Massachusetts Amherst", "cn": "马萨诸塞大学阿默斯特分校", "country": "United States", "type": "综合大学", "usn_global": 160, "usn_us": 64, "usn_la": null, "qs_global": 260, "the_global": 112, "sid_offers": 3, "url": "https://www.umass.edu/"}, {"name": "Lancaster University", "cn": "兰卡斯特大学", "country": "United Kingdom", "type": "综合大学", "usn_global": 324, "usn_us": null, "usn_la": null, "qs_global": 164, "the_global": 184, "sid_offers": 1, "url": "https://www.lancaster.ac.uk/"}, {"name": "Case Western Reserve University", "cn": "凯斯西储大学", "country": "United States", "type": "综合大学", "usn_global": 189, "usn_us": 51, "usn_la": null, "qs_global": 326, "the_global": 145, "sid_offers": 2, "url": "https://www.case.edu/"}, {"name": "University of Otago", "cn": "奥塔哥大学", "country": "New Zealand", "type": "综合大学", "usn_global": 290, "usn_us": null, "usn_la": null, "qs_global": 198, "the_global": null, "sid_offers": 6, "url": "https://www.otago.ac.nz/"}, {"name": "Boston College", "cn": "波士顿学院", "country": "United States", "type": "综合大学", "usn_global": 491, "usn_us": 36, "usn_la": null, "qs_global": 549, "the_global": null, "sid_offers": 1, "url": "https://www.bc.edu/"}, {"name": "The Ohio State University (Columbus)", "cn": "俄亥俄州立大学哥伦布分校", "country": "United States", "type": "综合大学", "usn_global": 64, "usn_us": 41, "usn_la": null, "qs_global": 201, "the_global": 108, "sid_offers": 18, "url": "https://www.osu.edu/"}, {"name": "University of Rochester", "cn": "罗切斯特大学", "country": "United States", "type": "综合大学", "usn_global": 208, "usn_us": 46, "usn_la": null, "qs_global": 251, "the_global": 127, "sid_offers": 3, "url": "https://www.rochester.edu/"}, {"name": "Northeastern University", "cn": "东北大学", "country": "United States", "type": "综合大学", "usn_global": 232, "usn_us": 46, "usn_la": null, "qs_global": 385, "the_global": null, "sid_offers": 4, "url": "https://www.northeastern.edu/"}, {"name": "Virginia Tech", "cn": "弗吉尼亚理工学院", "country": "United States", "type": "综合大学", "usn_global": 285, "usn_us": 51, "usn_la": null, "qs_global": null, "the_global": null, "sid_offers": 2, "url": "https://www.vt.edu/"}, {"name": "William & Mary", "cn": "威廉与玛丽学院", "country": "United States", "type": "综合大学", "usn_global": 1556, "usn_us": 51, "usn_la": null, "qs_global": null, "the_global": null, "sid_offers": 1, "url": "https://www.wm.edu/"}, {"name": "Santa Clara University", "cn": "圣塔克拉拉大学", "country": "United States", "type": "综合大学", "usn_global": 1931, "usn_us": 59, "usn_la": null, "qs_global": null, "the_global": null, "sid_offers": 1, "url": "https://www.scu.edu/"}, {"name": "North Carolina State University", "cn": "北卡罗来纳州立大学", "country": "United States", "type": "综合大学", "usn_global": 268, "usn_us": 64, "usn_la": null, "qs_global": 320, "the_global": null, "sid_offers": 1, "url": "https://www.ncsu.edu/"}, {"name": "Rensselaer Polytechnic Institute", "cn": "伦斯勒理工学院", "country": "United States", "type": "综合大学", "usn_global": 1090, "usn_us": 64, "usn_la": null, "qs_global": 581, "the_global": null, "sid_offers": 2, "url": "https://www.rpi.edu/"}, {"name": "Brandeis University", "cn": "布兰迪斯大学", "country": "United States", "type": "综合大学", "usn_global": 762, "usn_us": 69, "usn_la": null, "qs_global": null, "the_global": null, "sid_offers": 1, "url": "https://www.brandeis.edu/"}, {"name": "Rutgers University-Newark", "cn": "罗格斯大学纽瓦克分校", "country": "United States", "type": "综合大学", "usn_global": 688, "usn_us": 75, "usn_la": null, "qs_global": null, "the_global": null, "sid_offers": 1, "url": "https://www.newark.rutgers.edu/"}, {"name": "New Jersey Institute of Technology", "cn": "新泽西理工学院", "country": "United States", "type": "综合大学", "usn_global": 1070, "usn_us": 80, "usn_la": null, "qs_global": null, "the_global": null, "sid_offers": 1, "url": "https://www.njit.edu/"}, {"name": "Montclair State University", "cn": "蒙特克莱尔州立大学", "country": "United States", "type": "综合大学", "usn_global": 1607, "usn_us": 158, "usn_la": null, "qs_global": null, "the_global": null, "sid_offers": 1, "url": "https://www.montclair.edu/"}, {"name": "Wilkes University", "cn": "威尔克斯大学", "country": "United States", "type": "综合大学", "usn_global": null, "usn_us": 318, "usn_la": null, "qs_global": null, "the_global": null, "sid_offers": 1, "url": "https://www.wilkes.edu/"}, {"name": "Rose-Hulman Institute of Technology", "cn": "罗斯-霍尔曼理工学院", "country": "United States", "type": "综合大学", "usn_global": null, "usn_us": null, "usn_la": null, "qs_global": null, "the_global": null, "sid_offers": 2, "url": "https://www.rose-hulman.edu/"}, {"name": "Rhode Island School of Design", "cn": "罗德岛设计学院", "country": "United States", "type": "艺术类", "usn_global": null, "usn_us": null, "usn_la": null, "qs_global": null, "the_global": null, "sid_offers": 1, "url": "https://www.risd.edu/"}, {"name": "Parsons School of Design at The New School", "cn": "帕森斯设计学院", "country": "United States", "type": "艺术类", "usn_global": null, "usn_us": null, "usn_la": null, "qs_global": null, "the_global": null, "sid_offers": 1, "url": "https://www.newschool.edu/parsons/"}, {"name": "Carleton College", "cn": "卡尔顿学院", "country": "United States", "type": "文理学院", "usn_global": null, "usn_us": null, "usn_la": 10, "qs_global": null, "the_global": null, "sid_offers": 1, "url": "https://www.carleton.edu/"}, {"name": "Haverford College", "cn": "哈弗福德学院", "country": "United States", "type": "文理学院", "usn_global": null, "usn_us": null, "usn_la": 24, "qs_global": null, "the_global": null, "sid_offers": 1, "url": "https://www.haverford.edu/"}, {"name": "Macalester College", "cn": "麦卡莱斯特学院", "country": "United States", "type": "文理学院", "usn_global": null, "usn_us": null, "usn_la": 28, "qs_global": null, "the_global": null, "sid_offers": 2, "url": "https://www.macalester.edu/"}, {"name": "Denison University", "cn": "丹尼森大学", "country": "United States", "type": "文理学院", "usn_global": null, "usn_us": null, "usn_la": 34, "qs_global": null, "the_global": null, "sid_offers": 1, "url": "https://denison.edu/"}, {"name": "Franklin & Marshall College", "cn": "富兰克林与马歇尔学院", "country": "United States", "type": "文理学院", "usn_global": null, "usn_us": null, "usn_la": 35, "qs_global": null, "the_global": null, "sid_offers": 1, "url": "https://www.fandm.edu/"}, {"name": "Lingnan University", "cn": "香港岭南大学", "country": "Hong Kong SAR", "type": "综合大学", "usn_global": 783, "usn_us": null, "usn_la": null, "qs_global": 581, "the_global": null, "sid_offers": 3, "url": "https://www.ln.edu.hk/"}, {"name": "Goldsmiths, University of London", "cn": "伦敦大学金史密斯学院", "country": "United Kingdom", "type": "综合大学", "usn_global": 1585, "usn_us": null, "usn_la": null, "qs_global": null, "the_global": null, "sid_offers": 3, "url": "https://www.gold.ac.uk/"}, {"name": "University of Greenwich", "cn": "格林威治大学", "country": "United Kingdom", "type": "综合大学", "usn_global": 932, "usn_us": null, "usn_la": null, "qs_global": null, "the_global": null, "sid_offers": 1, "url": "https://www.gre.ac.uk/"}, {"name": "Western Sydney University", "cn": "西悉尼大学", "country": "Australia", "type": "综合大学", "usn_global": 242, "usn_us": null, "usn_la": null, "qs_global": 77, "the_global": null, "sid_offers": 1, "url": "https://www.westernsydney.edu.au/"}, {"name": "Taylor's University", "cn": "泰莱大学", "country": "Malaysia", "type": "综合大学", "usn_global": 783, "usn_us": null, "usn_la": null, "qs_global": 272, "the_global": null, "sid_offers": 1, "url": "https://university.taylors.edu.my/"}, {"name": "The Education University of Hong Kong", "cn": "香港教育大学", "country": "Hong Kong SAR", "type": "综合大学", "usn_global": 559, "usn_us": null, "usn_la": null, "qs_global": 406, "the_global": 195, "sid_offers": 1, "url": "https://www.eduhk.hk/"}];
+
+// ===== Helpers =====
+function countryDisplay(raw) {
+  if (!raw) return '—';
+  return raw.replace(/\s*SAR$/i, '').trim();
+}
+function countryEmoji(raw) {
+  const m = {'United States':'🇺🇸','United Kingdom':'🇬🇧','Canada':'🇨🇦','Australia':'🇦🇺','Singapore':'🇸🇬','Netherlands':'🇳🇱','New Zealand':'🇳🇿','Hong Kong SAR':'🇭🇰','Hong Kong':'🇭🇰','China (Mainland)':'🇨🇳','Malaysia':'🇲🇾'};
+  return m[raw] || '';
+}
+function countryFilterLabel(raw) {
+  const map = {'Hong Kong SAR':'🇭🇰 中国香港','Hong Kong':'🇭🇰 中国香港','United States':'🇺🇸 美国','United Kingdom':'🇬🇧 英国','Canada':'🇨🇦 加拿大','Australia':'🇦🇺 澳大利亚','Singapore':'🇸🇬 新加坡','Netherlands':'🇳🇱 荷兰','New Zealand':'🇳🇿 新西兰','China (Mainland)':'🇨🇳 中国大陆','Malaysia':'🇲🇾 马来西亚'};
+  return map[raw] || raw;
+}
+function countryMatches(a, b) {
+  if (!a || !b) return a === b;
+  if (a === b) return true;
+  const isHK = v => v === 'Hong Kong SAR' || v === 'Hong Kong';
+  return isHK(a) && isHK(b);
+}
+
+// ===== Theme =====
+const THEME_KEY = 'sid-rankings-theme';
+const THEME_ICONS = { light: '☀️', dark: '🌙', auto: '🌓' };
+const THEME_LABELS = { light: '浅色', dark: '深色', auto: '自动' };
+
+function getTheme() {
+  return localStorage.getItem(THEME_KEY) || 'auto';
+}
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  document.getElementById('themeToggle').textContent = THEME_ICONS[t];
+  document.getElementById('themeToggle').title = `主题: ${THEME_LABELS[t]} — 点击切换`;
+  localStorage.setItem(THEME_KEY, t);
+}
+function cycleTheme() {
+  const order = ['auto', 'light', 'dark'];
+  const cur = getTheme();
+  const next = order[(order.indexOf(cur) + 1) % order.length];
+  applyTheme(next);
+  showToast(`主题已切换至 ${THEME_LABELS[next]} 模式`);
+}
+
+applyTheme(getTheme());
+
+// ===== State =====
+let schools = DATA;
+let filtered = [...schools];
+let sortCol = 'usn_global';
+let sortDir = 'asc';
+let activeChip = 'all';
+let density = 'comfortable';
+let pinnedSchools = new Set();
+let customRankActive = false;
+let customRankField = 'usn_global';
+let customRankN = 50;
+
+const colKeys = ['sid_offers','cn','country','type','usn_global','qs_global','the_global','usn_us','usn_la'];
+let colVisible = Object.fromEntries(colKeys.map(k => [k, true]));
+
+// ===== Init =====
+(function init() {
+  const cc = new Map();
+  schools.forEach(s => {
+    if (s.country && s.country !== 'None') {
+      const label = countryFilterLabel(s.country);
+      if (!cc.has(s.country)) cc.set(s.country, label);
+    }
+  });
+  const sel = document.getElementById('filterCountry');
+  [...cc.entries()].sort((a, b) => a[1].localeCompare(b[1])).forEach(([value, label]) => {
+    const o = document.createElement('option');
+    o.value = value; o.textContent = label;
+    sel.appendChild(o);
+  });
+  const totalOff = schools.reduce((sum, s) => sum + (s.sid_offers || 0), 0);
+  document.getElementById('totalN').textContent = schools.length;
+  document.getElementById('totalOffers').textContent = totalOff;
+  buildColMenu();
+  document.getElementById('viewport').addEventListener('scroll', onViewportScroll);
+  doFilter();
+})();
+
+// ===== Column toggle =====
+function buildColMenu() {
+  const menu = document.getElementById('colMenu');
+  const labels = {sid_offers:'SID 录取数',cn:'中文名',country:'地区',type:'类型',usn_global:'USNews 2027 全球',qs_global:'QS 2027 全球',the_global:'THE 2026 全球',usn_us:'USNews 2026 美国',usn_la:'USNews 2026 文理'};
+  let h = '';
+  for (const k of colKeys) {
+    const chk = colVisible[k] ? ' checked' : '';
+    h += `<label><input type="checkbox" data-col="${k}"${chk} onchange="toggleCol('${k}',this.checked)">${labels[k] || k}</label>`;
+  }
+  menu.innerHTML = h;
+}
+function toggleCol(key, visible) { colVisible[key] = visible; render(); }
+function toggleColMenu() { document.getElementById('colMenu').classList.toggle('open'); }
+document.addEventListener('click', e => {
+  const menu = document.getElementById('colMenu'), btn = document.getElementById('colToggleBtn');
+  if (menu.classList.contains('open') && !menu.contains(e.target) && e.target !== btn) menu.classList.remove('open');
+});
+
+// ===== Density =====
+function toggleDensity() {
+  density = density === 'comfortable' ? 'compact' : 'comfortable';
+  showToast(density === 'compact' ? '已切换至紧凑行高' : '已切换至舒适行高');
+  render();
+}
+
+// ===== Scroll / FAB =====
+function onViewportScroll() {
+  document.getElementById('fabTop').classList.toggle('visible', document.getElementById('viewport').scrollTop > 400);
+}
+function scrollToTop() { document.getElementById('viewport').scrollTo({ top: 0, behavior: 'smooth' }); }
+
+// ===== Tips dismiss =====
+function dismissTips() {
+  document.getElementById('tipsBar').style.display = 'none';
+  localStorage.setItem('sid-tips-dismissed', '1');
+  showToast('提示栏已关闭，刷新页面可恢复');
+}
+(function restoreTips() {
+  if (localStorage.getItem('sid-tips-dismissed') === '1') {
+    document.getElementById('tipsBar').style.display = 'none';
+  }
+})();
+
+// ===== Toast =====
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ===== Mobile toggle =====
+function toggleMobileOpts() {
+  const el = document.getElementById('mobileCollapse');
+  const btn = document.getElementById('mobileOptsBtn');
+  const expanded = el.classList.toggle('expanded');
+  btn.textContent = expanded ? '⚙️ 收起' : '⚙️ 筛选';
+}
+(function initMobile() {
+  if (window.innerWidth <= 768) {
+    document.getElementById('mobileCollapse').classList.remove('expanded');
+  }
+})();
+
+// ===== Helpers =====
+function minRank(s) { const r = [s.usn_global, s.qs_global, s.the_global].filter(r => r > 0); return r.length ? Math.min(...r) : null; }
+function esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function highlightText(text, query) {
+  if (!query) return esc(text);
+  const q = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return esc(text).replace(new RegExp(`(${q})`, 'gi'), '<mark>$1</mark>');
+}
+
+// ===== Rank badges =====
+function rankBadge(r, isBest) {
+  if (!r || r <= 0) return '<span class="r r-na">—</span>';
+  let cls = 'r-t5';
+  if (r === 1) cls = 'r-t1';
+  else if (r <= 3) cls = 'r-t2';
+  else if (r <= 10) cls = 'r-t3';
+  else if (r <= 50) cls = 'r-t4';
+  if (isBest) cls += ' r-best';
+  return `<span class="r ${cls}">${r}</span>`;
+}
+function rankCell(s, field) {
+  const v = s[field];
+  if (!v || v <= 0) return '<span class="r r-na">—</span>';
+  const best = minRank(s);
+  return rankBadge(v, best !== null && v === best);
+}
+
+// ===== SID offers =====
+function offerBadge(n) {
+  if (!n || n <= 0) return '<span class="offer-none">—</span>';
+  let tier = 'off-1';
+  if (n >= 20) tier = 'off-4';
+  else if (n >= 10) tier = 'off-3';
+  else if (n >= 4) tier = 'off-2';
+  return `<span class="offer-badge ${tier}" data-tooltip="SID 2026 届共 ${n} 份录取">${n}</span>`;
+}
+
+// ===== Country cell =====
+function countryCell(raw) {
+  const d = countryDisplay(raw), emoji = countryEmoji(raw);
+  const label = emoji ? `${emoji} ${d}` : d;
+  return `<span class="s-cc" onclick="event.stopPropagation();filterByCountry('${esc(raw)}')" title="点击仅显示该地区">${esc(label)}</span>`;
+}
+
+// ===== Filtering =====
+function chipFilter(v, b) {
+  activeChip = v;
+  document.querySelectorAll('#chips .chip').forEach(el => el.classList.remove('active'));
+  if (b) b.classList.add('active');
+  document.getElementById('filterRank').value = '';
+  closeCustomRank();
+  doFilter();
+  updateFilterHint();
+}
+function clearSearch() {
+  document.getElementById('search').value = '';
+  document.getElementById('search').focus();
+  doFilter();
+}
+function filterByCountry(raw) {
+  document.getElementById('filterCountry').value = raw;
+  document.getElementById('search').value = '';
+  document.querySelectorAll('#chips .chip').forEach(el => el.classList.remove('active'));
+  activeChip = '';
+  doFilter();
+  updateFilterHint();
+  showToast(`已筛选: ${countryDisplay(raw)}`);
+}
+function resetAll() {
+  document.getElementById('search').value = '';
+  document.getElementById('filterCountry').value = '';
+  document.getElementById('filterType').value = '';
+  document.getElementById('filterRank').value = '';
+  closeCustomRank();
+  activeChip = 'all';
+  sortCol = 'usn_global'; sortDir = 'asc';
+  pinnedSchools.clear();
+  document.querySelectorAll('#chips .chip').forEach(el => el.classList.remove('active'));
+  const allChip = document.querySelector('#chips .chip[data-chip="all"]');
+  if (allChip) allChip.classList.add('active');
+  colKeys.forEach(k => { colVisible[k] = true; });
+  density = 'comfortable';
+  doFilter();
+  updateFilterHint();
+  showToast('已重置所有筛选、排序与固定');
+}
+function setSort(c) {
+  if (sortCol === c) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+  else { sortCol = c; sortDir = 'asc'; }
+  doFilter();
+}
+
+function updateFilterHint() {
+  const hasFilters = !!(document.getElementById('search').value.trim()
+    || document.getElementById('filterCountry').value
+    || document.getElementById('filterType').value
+    || document.getElementById('filterRank').value
+    || customRankActive
+    || activeChip !== 'all');
+  document.getElementById('activeFilterHint').style.display = hasFilters ? 'inline-flex' : 'none';
+}
+
+// ===== Custom rank filter =====
+function onRankFilterChange() {
+  const val = document.getElementById('filterRank').value;
+  if (val === 'custom') {
+    customRankActive = true;
+    document.getElementById('filterRank').value = '';
+    document.getElementById('customRankPanel').style.display = 'inline-flex';
+  } else {
+    customRankActive = false;
+    document.getElementById('customRankPanel').style.display = 'none';
+  }
+  doFilter();
+}
+function onCustomRankChange() {
+  customRankField = document.getElementById('customRankField').value;
+  customRankN = parseInt(document.getElementById('customRankNum').value) || 50;
+  doFilter();
+  updateFilterHint();
+}
+function closeCustomRank() {
+  customRankActive = false;
+  document.getElementById('customRankPanel').style.display = 'none';
+}
+
+function doFilter() {
+  const s = document.getElementById('search').value.toLowerCase().trim();
+  const co = document.getElementById('filterCountry').value;
+  const ty = document.getElementById('filterType').value;
+  const rf = customRankActive ? '' : document.getElementById('filterRank').value;
+  const cl = document.getElementById('clearSearch');
+
+  if (s) cl.classList.add('visible'); else cl.classList.remove('visible');
+  if (rf || s || co || ty || customRankActive) {
+    activeChip = '';
+    document.querySelectorAll('#chips .chip').forEach(el => el.classList.remove('active'));
+  }
+
+  filtered = schools.filter(x => {
+    if (s) {
+      const haystack = [(x.name||'').toLowerCase(), (x.cn||'').toLowerCase(), countryDisplay(x.country).toLowerCase()].join(' ');
+      if (!haystack.includes(s)) return false;
+    }
+    if (co && !countryMatches(x.country, co)) return false;
+    if (ty && x.type !== ty) return false;
+    if (activeChip === 'china' && x.country !== 'China (Mainland)') return false;
+    if (activeChip === 'us' && !['United States','United States of America'].includes(x.country)) return false;
+    if (activeChip === 'uk' && x.country !== 'United Kingdom') return false;
+    if (activeChip === 'hk') { if (!countryMatches(x.country, 'Hong Kong SAR')) return false; }
+    if (activeChip === 'sg' && x.country !== 'Singapore') return false;
+    if (activeChip === 'au' && x.country !== 'Australia') return false;
+    if (activeChip === 'ca' && x.country !== 'Canada') return false;
+    if (activeChip === 'other') {
+      const mains = ['United States','United States of America','United Kingdom','Hong Kong SAR','Hong Kong','Singapore','Australia','Canada','China (Mainland)'];
+      if (mains.includes(x.country)) return false;
+    }
+    if (customRankActive) {
+      const val = x[customRankField];
+      if (!val || val <= 0 || val > customRankN) return false;
+    }
+    if (rf) {
+      const u = x.usn_global || 99999, q = x.qs_global || 99999, t = x.the_global || 99999;
+      const us = x.usn_us || 99999, la = x.usn_la || 99999;
+      if      (rf === 'usn10'  && u > 10)   return false;
+      else if (rf === 'usn20'  && u > 20)   return false;
+      else if (rf === 'usn30'  && u > 30)   return false;
+      else if (rf === 'usn50'  && u > 50)   return false;
+      else if (rf === 'usn100' && u > 100)  return false;
+      else if (rf === 'usn200' && u > 200)  return false;
+      else if (rf === 'qs10'  && q > 10)   return false;
+      else if (rf === 'qs20'  && q > 20)   return false;
+      else if (rf === 'qs30'  && q > 30)   return false;
+      else if (rf === 'qs50'  && q > 50)   return false;
+      else if (rf === 'qs100' && q > 100)  return false;
+      else if (rf === 'qs200' && q > 200)  return false;
+      else if (rf === 'th10'  && t > 10)   return false;
+      else if (rf === 'th20'  && t > 20)   return false;
+      else if (rf === 'th30'  && t > 30)   return false;
+      else if (rf === 'th50'  && t > 50)   return false;
+      else if (rf === 'th100' && t > 100)  return false;
+      else if (rf === 'th200' && t > 200)  return false;
+      else if (rf === 'usnus20' && us > 20) return false;
+      else if (rf === 'usnus30' && us > 30) return false;
+      else if (rf === 'usnus50' && us > 50) return false;
+      else if (rf === 'usnla10' && la > 10) return false;
+      else if (rf === 'usnla20' && la > 20) return false;
+      else if (rf === 'usnla30' && la > 30) return false;
+      else if (rf === 'any50'  && Math.min(u,q,t) > 50)  return false;
+      else if (rf === 'any100' && Math.min(u,q,t) > 100) return false;
+      else if (rf === 'all50'  && (u>50||q>50||t>50))   return false;
+      else if (rf === 'all100' && (u>100||q>100||t>100)) return false;
+    }
+    return true;
+  });
+
+  filtered.sort((a, b) => {
+    let va, vb;
+    if (sortCol === 'name') { va = (a.name||'').toLowerCase(); vb = (b.name||'').toLowerCase(); }
+    else if (sortCol === 'cn') { va = (a.cn||''); vb = (b.cn||''); return (va>vb?1:(va<vb?-1:0))*(sortDir==='asc'?1:-1); }
+    else if (sortCol === 'country') { va = a.country||''; vb = b.country||''; }
+    else if (sortCol === 'type') { va = a.type||''; vb = b.type||''; }
+    else { va = a[sortCol]!=null?a[sortCol]:99999; vb = b[sortCol]!=null?b[sortCol]:99999; }
+    const cmp = typeof va === 'string' ? va.localeCompare(vb) : va - vb;
+    return sortDir === 'asc' ? cmp : -cmp;
+  });
+
+  updateStats();
+  render();
+  updateFilterHint();
+}
+
+// ===== Stats bar =====
+function updateStats() {
+  document.getElementById('filteredN').textContent = filtered.length;
+  document.getElementById('showN').textContent = filtered.length;
+  const showNM = document.getElementById('showNM');
+  if (showNM) showNM.textContent = filtered.length;
+
+  function offerSum(field, threshold) {
+    return filtered.reduce((sum, x) => {
+      if (x[field] && x[field] > 0 && x[field] <= threshold) return sum + (x.sid_offers || 0);
+      return sum;
+    }, 0);
+  }
+
+  const qs50    = offerSum('qs_global', 50);
+  const qs100   = offerSum('qs_global', 100);
+  const th50    = offerSum('the_global', 50);
+  const th100   = offerSum('the_global', 100);
+  const usng50  = offerSum('usn_global', 50);
+  const usng100 = offerSum('usn_global', 100);
+  const usnus30 = offerSum('usn_us', 30);
+  const usnus50 = offerSum('usn_us', 50);
+  const la30    = offerSum('usn_la', 30);
+
+  document.getElementById('statsBarInner').innerHTML = [
+    `<div class="stats-group">`
+      + `<div class="stats-group-label"><span class="sg-dot" style="background:#3b82f6"></span> QS 全球排名</div>`
+      + `<div class="stats-group-cards">`
+        + `<div class="sg-card"><span class="sg-val">${qs50}</span><span class="sg-label"><em>≤前50</em> 录取份数</span></div>`
+        + `<div class="sg-card"><span class="sg-val">${qs100}</span><span class="sg-label"><em>≤前100</em> 录取份数</span></div>`
+      + `</div>`
+    + `</div>`,
+    `<div class="stats-group">`
+      + `<div class="stats-group-label"><span class="sg-dot" style="background:#10b981"></span> THE 全球排名</div>`
+      + `<div class="stats-group-cards">`
+        + `<div class="sg-card"><span class="sg-val">${th50}</span><span class="sg-label"><em>≤前50</em> 录取份数</span></div>`
+        + `<div class="sg-card"><span class="sg-val">${th100}</span><span class="sg-label"><em>≤前100</em> 录取份数</span></div>`
+      + `</div>`
+    + `</div>`,
+    `<div class="stats-group">`
+      + `<div class="stats-group-label"><span class="sg-dot" style="background:#f59e0b"></span> USNews 全球排名</div>`
+      + `<div class="stats-group-cards">`
+        + `<div class="sg-card"><span class="sg-val">${usng50}</span><span class="sg-label"><em>≤前50</em> 录取份数</span></div>`
+        + `<div class="sg-card"><span class="sg-val">${usng100}</span><span class="sg-label"><em>≤前100</em> 录取份数</span></div>`
+      + `</div>`
+    + `</div>`,
+    `<div class="stats-group">`
+      + `<div class="stats-group-label"><span class="sg-dot" style="background:#ec4899"></span> USNews 美国本科</div>`
+      + `<div class="stats-group-cards">`
+        + `<div class="sg-card"><span class="sg-val">${usnus30}</span><span class="sg-label"><em>≤前30</em> 录取份数</span></div>`
+        + `<div class="sg-card"><span class="sg-val">${usnus50}</span><span class="sg-label"><em>≤前50</em> 录取份数</span></div>`
+      + `</div>`
+    + `</div>`,
+    `<div class="stats-group">`
+      + `<div class="stats-group-label"><span class="sg-dot" style="background:#8b5cf6"></span> USNews 文理学院</div>`
+      + `<div class="stats-group-cards">`
+        + `<div class="sg-card"><span class="sg-val">${la30}</span><span class="sg-label"><em>≤前30</em> 录取份数</span></div>`
+      + `</div>`
+    + `</div>`,
+  ].join('');
+}
+
+// ===== Render =====
+function render() {
+  const tb = document.getElementById('tb'), em = document.getElementById('emptyMsg');
+  const sq = document.getElementById('search').value.toLowerCase().trim();
+  const pad = density === 'compact' ? '5px 8px' : '10px 8px';
+  const padFirst = density === 'compact' ? '5px 8px 5px 18px' : '10px 8px 10px 18px';
+
+  if (!filtered.length) { tb.innerHTML = ''; em.style.display = 'block'; return; }
+  em.style.display = 'none';
+
+  let h = '';
+  for (let i = 0; i < filtered.length; i++) {
+    const s = filtered[i];
+    const isPinned = pinnedSchools.has(s.name);
+    const trClass = isPinned ? ' class="pinned"' : '';
+
+    const nameHTML = sq ? highlightText(s.name, sq) : esc(s.name);
+    const cnHTML = (s.cn && s.cn !== 'None') ? (sq ? highlightText(s.cn, sq) : esc(s.cn)) : '—';
+    const url = s.url;
+
+    h += `<tr${trClass} onclick="pinSchoolAt(${i})">`;
+    h += `<td class="row-num col-sticky" style="padding:${padFirst};text-align:center" title="点击固定/取消">${i + 1}</td>`;
+    h += `<td class="col-sticky-2" style="padding:${pad};text-align:left"><a href="${esc(url||'')}" target="_blank" rel="noopener" class="s-name" title="打开官网 → ${esc(url||'')}" onclick="event.stopPropagation()">${nameHTML}</a></td>`;
+
+    h += colVisible['sid_offers'] ? `<td style="padding:${pad};text-align:center">${offerBadge(s.sid_offers)}</td>` : '<td style="display:none"></td>';
+    h += colVisible['cn'] ? `<td class="s-cn" style="padding:${pad};text-align:center">${cnHTML}</td>` : '<td style="display:none"></td>';
+    h += colVisible['country'] ? `<td style="padding:${pad};text-align:center;white-space:nowrap">${countryCell(s.country)}</td>` : '<td style="display:none"></td>';
+    h += colVisible['type'] ? `<td class="s-type" style="padding:${pad};text-align:center">${s.type === '文理学院' ? `<span class="badge-la">文理学院</span>` : s.type === '艺术类' ? `<span class="badge-la" style="background:#fce7f3;color:#be185d">艺术类</span>` : esc(s.type || '—')}</td>` : '<td style="display:none"></td>';
+    h += colVisible['usn_global'] ? `<td style="padding:${pad}">${rankCell(s, 'usn_global')}</td>` : '<td style="display:none"></td>';
+    h += colVisible['qs_global'] ? `<td style="padding:${pad}">${rankCell(s, 'qs_global')}</td>` : '<td style="display:none"></td>';
+    h += colVisible['the_global'] ? `<td style="padding:${pad}">${rankCell(s, 'the_global')}</td>` : '<td style="display:none"></td>';
+    h += colVisible['usn_us'] ? `<td style="padding:${pad}">${rankCell(s, 'usn_us')}</td>` : '<td style="display:none"></td>';
+    h += colVisible['usn_la'] ? `<td style="padding:${pad}">${rankCell(s, 'usn_la')}</td>` : '<td style="display:none"></td>';
+
+    h += '</tr>';
+  }
+  tb.innerHTML = h;
+
+  document.querySelectorAll('.arrow').forEach(a => { a.classList.remove('on','asc','desc'); a.textContent = ''; });
+  const ar = document.getElementById('ar-' + sortCol);
+  if (ar) { ar.classList.add('on'); ar.classList.add(sortDir === 'asc' ? 'asc' : 'desc'); ar.textContent = sortDir === 'asc' ? '▲' : '▼'; }
+
+  buildColMenu();
+}
+
+// ===== Pin school (name-based, multi) =====
+function pinSchoolAt(idx) {
+  const school = filtered[idx];
+  if (!school) return;
+  const name = school.name;
+  if (pinnedSchools.has(name)) {
+    pinnedSchools.delete(name);
+    showToast(`已取消固定: ${name}`);
+  } else {
+    pinnedSchools.add(name);
+    showToast(`已固定: ${name}（累计 ${pinnedSchools.size} 所）`);
+  }
+  render();
+}
+
+// ===== Copy table =====
+function copyTable() {
+  const lines = [];
+  for (let i = 0; i < filtered.length; i++) {
+    const s = filtered[i];
+    const parts = [(i+1), s.name, s.sid_offers||'—', s.cn||'—', countryDisplay(s.country), s.type||'—',
+      s.usn_global||'—', s.qs_global||'—', s.the_global||'—', s.usn_us||'—', s.usn_la||'—'];
+    lines.push(parts.join('\t'));
+  }
+  const text = lines.join('\n');
+  navigator.clipboard.writeText(text).then(() => {
+    showToast(`✅ 已复制 ${filtered.length} 所院校数据到剪贴板`);
+  }).catch(() => {
+    showToast('⚠ 复制失败，请尝试导出 CSV');
+  });
+}
+
+// ===== CSV Export =====
+function exportCSV() {
+  const headers = ['序号','学校名称(英文)','SID录取数(份)','中文名','地区','类型','USNews 2027 全球','QS 2027 全球','THE 2026 全球','USNews 2026 美国','USNews 2026 文理'];
+  let csv = '﻿' + headers.join(',') + '\n';
+  for (let i = 0; i < filtered.length; i++) {
+    const s = filtered[i];
+    csv += [i+1, s.name, s.sid_offers||'', s.cn||'', countryDisplay(s.country), s.type||'',
+      s.usn_global||'', s.qs_global||'', s.the_global||'', s.usn_us||'', s.usn_la||'']
+      .map(v => (typeof v === 'string' && (v.includes(',')||v.includes('\n'))) ? '"'+v.replace(/"/g,'""')+'"' : (v==null?'':v))
+      .join(',') + '\n';
+  }
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'SID_University_Rankings_2027.csv';
+  a.click(); URL.revokeObjectURL(url);
+  showToast(`✅ 已导出 ${filtered.length} 所院校数据`);
+}
+
+// ===== Keyboard =====
+document.addEventListener('keydown', e => {
+  const isInput = document.activeElement === document.getElementById('search');
+  if ((e.ctrlKey||e.metaKey) && e.key === 'k') { e.preventDefault(); document.getElementById('search').focus(); }
+  if (e.key === 'Escape') {
+    if (isInput) { clearSearch(); }
+    else { resetAll(); }
+    document.getElementById('colMenu').classList.remove('open');
+  }
+  if ((e.ctrlKey||e.metaKey) && e.key === 'z') { e.preventDefault(); resetAll(); }
+  if ((e.ctrlKey||e.metaKey) && e.key === 's') { e.preventDefault(); exportCSV(); }
+  if ((e.ctrlKey||e.metaKey) && e.key === 'd') { e.preventDefault(); cycleTheme(); }
+  if (!isInput) {
+    if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && filtered.length > 0) {
+      e.preventDefault();
+      const delta = e.key === 'ArrowDown' ? 1 : -1;
+      if (pinnedSchools.size === 0) {
+        pinSchoolAt(0);
+      } else {
+        const pinnedArr = [...pinnedSchools];
+        const lastPinnedName = pinnedArr[pinnedArr.length - 1];
+        const currentIdx = filtered.findIndex(s => s.name === lastPinnedName);
+        const nextIdx = Math.max(0, Math.min(filtered.length - 1, (currentIdx >= 0 ? currentIdx : 0) + delta));
+        pinSchoolAt(nextIdx);
+      }
+      setTimeout(() => {
+        const el = document.querySelector('tr.pinned');
+        if (el) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }, 50);
+    }
+  }
+});
+</script>
+</body>
+</html>
